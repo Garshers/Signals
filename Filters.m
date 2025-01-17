@@ -34,6 +34,9 @@ function main()
 
     % Plot GWM (Power Spectral Density)
     plotPSD(signal, filtered_signal_iir, filtered_signal_fir, fs);
+
+    % Plot Amplitude Response of IIR and FIR filters
+    plotAmplitudeResponse(w, h, W_fir, H_fir);
 end
 
 function [t, signal] = createSignal(fs, duration)
@@ -41,7 +44,7 @@ function [t, signal] = createSignal(fs, duration)
     t = 0:1/fs:duration-1/fs; % Time vector
     
     % Signal with frequencies below and above Nyquist frequency
-    signal_clean = sin(2*pi*100*t) + 0.5*sin(2*pi*6000*t) + 0.2*sin(2*pi*12000*t);
+    signal_clean = sin(2*pi*100*t) + 0.5*sin(2*pi*6000*t) + 0.2*sin(2*pi*12000*t); %12000 - creating additional aliasing
     
     % Add white noise to the signal
     noise = 0.1 * randn(size(t));
@@ -91,5 +94,19 @@ function plotPSD(original, filtered_iir, filtered_fir, fs)
     title('Power Spectral Density - FIR Filtered Signal');
     xlabel('Frequency (Hz)');
     ylabel('Power (dB/Hz)');
+    grid on;
+end
+
+function plotAmplitudeResponse(w, h, W_fir, H_fir)
+    % Plot the amplitude response of IIR (Butterworth) and FIR (Kaiser Window) filters
+    figure;
+    hold on;
+    plot(w, 20 * log10(abs(h)), 'b', 'LineWidth', 1.5); % IIR filter in blue
+    plot(W_fir, 20 * log10(abs(H_fir)), 'r', 'LineWidth', 1.5); % FIR filter in red
+    hold off;
+    title('Amplitude Response of IIR (Butterworth) and FIR (Kaiser Window) Filters');
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude (dB)');
+    legend('IIR Filter (Butterworth)', 'FIR Filter (Kaiser Window)');
     grid on;
 end
