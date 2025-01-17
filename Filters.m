@@ -11,13 +11,19 @@ function main()
     [h_fir, W_fir, H_fir] = designFIRFilter(fs, N, 1, 7250, 128, 8);
 
     %% Notes about filter design:
-    % The choice of low_cutoff_K = 0 is related to the FIR filter's passband. 
-    % Setting values in the range (0, 50) causes a longer rise time, reaching zero at 50 Hz. 
-    % In practice, the value reaches around 150 Hz. low_cutoff_B = 30 is the closest value 
-    % to 50 Hz that meets the assumptions (faster rise time than the IIR filter).
+    % 1. Low cutoff frequency for FIR filter (low_cutoff = 1 Hz):
+    %    - Setting a low cutoff frequency in the range [1, 50 Hz] for FIR filters can result 
+    %      in a longer transition (rise) time.
+    %    - At 50 Hz, the filter's response may still be attenuating instead of reaching zero 
+    %      in practice, the FIR filter reaches its full attenuation near 150 Hz.
+    %    - For the IIR filter, low_cutoff_B = 30 Hz is chosen as the closest value to 50 Hz 
+    %      while maintaining a faster rise time compared to the FIR filter.
 
-    % The choice of beta = 8 (Kaiser window parameter) ensures a compromise between a 
-    % sufficiently steep slope in the passband and sidelobe attenuation.
+    % 2. Kaiser window parameter (beta = 8):
+    %    - The Kaiser window parameter beta controls the trade-off between the steepness 
+    %      of the filter's transition band and the sidelobe attenuation in the stopband.
+    %    - Beta = 8 is chosen as a balanced compromise to achieve sufficiently steep slope in the 
+    %      passband and good attenuation of the sidelobes, minimizing interference from out-of-band signals or noise.
 
         % Create a test signal
     [t, signal] = createSignal(fs, duration);
